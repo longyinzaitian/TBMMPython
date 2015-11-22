@@ -1,6 +1,5 @@
 #coding:utf-8
 __author__ = 'CQC'
-# -*- coding:utf-8 -*-
 import urllib
 import urllib2
 import re
@@ -22,7 +21,7 @@ class Spider:
     def getContents(self,pageIndex):
         page = self.getPage(pageIndex)
         # 这里获取六条信息 个人信息网址，头像图片地址，美眉个人信息页地址，美眉名字，年龄，居住地址
-        pattern = re.compile('<div class="list-item".*?pic-word.*?<a href="(.*?)".target=.*?<img src="(.*?)".alt.*?<a class="lady-name".href=(.*?).target=.*?>(.*?)</a>.*?<strong>(.*?)</strong>.*?<span>(.*?)</span>',re.S)
+        pattern = re.compile('<div class="list-item".*?pic-word.*?<a href="(.*?)".target=.*?<img src="(.*?)".alt.*?<a class="lady-name".href="(.*?)".target=.*?>(.*?)</a>.*?<strong>(.*?)</strong>.*?<span>(.*?)</span>',re.S)
         items = re.findall(pattern,page)
         contents = []
         for item in items:
@@ -30,14 +29,17 @@ class Spider:
         return contents
     #获取MM个人详情页面
     def getDetailPage(self,infoURL):
-        response = urllib2.urlopen("https:"+infoURL)
+#         infoURL = re.sub('card','info', infoURL)
+#         print "替换之后的地址：",infoURL
+        response = urllib2.urlopen("https:"+infoURL)#+"&is_coment=false"
         return response.read().decode('gbk')
     #获取个人文字简介
     def getBrief(self,page):
-        pattern = re.compile('.*?<div.class="mm-aixiu-content".*?>(.*?)<!–',re.S)
+        pattern = re.compile('.*?<div.class="mm-aixiu-content".*?>(.*?)</div>.*?',re.S)
         result = re.search(pattern,page)
         if result is not None:
-            return self.tool.replace(result.group(0))
+            print 'result is not none'
+            return self.tool.replace(result.group(1))
         else:
             print 'getBrief()==empty'
             return 'empty'
@@ -108,15 +110,17 @@ class Spider:
             #item[0]个人详情URL,item[1]头像URL,item[2]是个人信息地址，item[3]姓名,item[4]年龄,item[5]居住地
             print u"发现一位模特,名字叫",item[3],u"芳龄",item[4],u",她在",item[5]
             print u"正在偷偷地保存",item[3],"的信息"
-            print u"又意外地发现她的个人地址是",item[0]
-            print u"名字对应的个人信息地址是",item[2]
+            print u"又意外地发现她的个人地址是",item[0] #这个地址需要登录
+            print u"名字对应的个人信息地址是",item[2]  #这个地址有用
             #个人详情页面的URL
             detailURL = item[0]
-            print 'detailURL=%s' %detailURL
+            print 'detailURL=https:%s' %detailURL
             #得到个人详情页面代码
 #             detailPage = self.getDetailPage(detailURL)
-#             #获取个人简介
+#             print detailPage
+            #获取个人简介
 #             brief = self.getBrief(detailPage)
+#             print '美眉个人信息==',brief
 #             #获取所有图片列表
 #             images = self.getAllImg(detailPage)
 #             self.mkdir(item[2])
@@ -133,4 +137,4 @@ class Spider:
             self.savePageInfo(i)
 #传入起止页码即可，在此传入了2,10,表示抓取第2到10页的MM
 spider = Spider()
-spider.savePagesInfo(1,10)
+spider.savePagesInfo(1,1)
