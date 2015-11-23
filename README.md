@@ -15,3 +15,9 @@
 
 
 欢迎访问我的博客[python抓取淘女郎网页信息](http://blog.csdn.net/u010156024/article/details/49977219)  
+
+**src/BDTBspider.py代码**   
+抓取百度贴吧网页回复信息并保存到记事本中的代码   
+结果截图：   
+![image](pic/百度贴吧信息获取截图.png)   
+欢迎访问我的博客[python抓取百度贴吧网页信息](http://blog.csdn.net/u010156024/article/details/49995797)
